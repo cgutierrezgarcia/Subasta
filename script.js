@@ -12,7 +12,7 @@ const DIRECT_BID_FIELD = document.getElementById("auction-direct-bid-field");
 const DIRECT_BID_BTN = document.getElementById("auction-direct-bid-btn");
 
 const PREVIOUS_BIDS_HTML = document.getElementById("auction-previous-bids");
-    
+
 
 
 class Auction {
@@ -34,25 +34,31 @@ class Auction {
     }
     
     bid = amount => {
-        console.log(amount);
         if (amount > this.minPrice) {
             this.price = amount;
             this.minPrice = this.price;
+            let nowInDate = new Date();
 
-            this.putDataInElement(
-                this.price.toFixed(2) +"€",
-                PRICE_HTML);
-            this.putDataInElement( 
-                (this.price + this.price * 0.1).toFixed(2) +"€",
-                FAST_BID_BTN_1,);
-            this.putDataInElement(
-                (this.price + this.price * 0.2).toFixed(2) +"€",
-                FAST_BID_BTN_2);
-            this.putDataInElement(
-                (this.price + this.price * 0.3).toFixed(2) +"€",
-                FAST_BID_BTN_3);
+            let headers = new Headers();
+            headers.append("Content-Type", "application/json");
 
-            this.storageData();
+            let raw = JSON.stringify({
+                "date": nowInDate.toLocaleString(),
+                "price": this.price
+            });
+
+            let requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: raw,
+                redirect: 'follow'
+            };
+
+                //.then(response => response.text())
+            fetch("http://localhost/Subasta/auctions.php", requestOptions)
+                .then(response => response.json())
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
         } else {
             if (isNaN(amount)) {
                 alert("El campo no puede estar vacío");
@@ -65,18 +71,18 @@ class Auction {
     }
 
     fastBid = amount => {
-        this.bid(this.price + this.price * amount)
+        this.bid(parseInt(this.price + this.price * amount));
     }
     
     directBid = () => {
-        this.price = DIRECT_BID_FIELD.value;
-        this.bid(parseInt(this.price));
+        this.price = parseInt(DIRECT_BID_FIELD.value);
+        this.bid(this.price);
     }
 
+    /*
     storageData = () => {
         let nowInMilliseconds = Date.now();
         let nowInDate = new Date();
-        console.log(nowInDate.toLocaleString());
         sessionStorage.setItem(
             nowInMilliseconds, nowInDate.toLocaleString() +" - "+ this.price.toFixed(2) + "€");
     }
@@ -92,6 +98,18 @@ class Auction {
                 sessionStorage.getItem(storageDataInTotal[i]);
         }
     }
+    */
+
+    putArrayInElement = (array, element) => {
+        array.sort(function(a, b) {
+            return b - a;
+        });
+        for (let i = 1; i < array.length; i++) {
+            let p = document.createElement("p");
+            element.appendChild(p).innerHTML = 
+                array[i][0] +" - "+ array[i][1] +"€";
+        }
+    }
 
     countdownOfDateInElement = (date, element) => {
         setInterval(function () {
@@ -100,7 +118,7 @@ class Auction {
             date2 = date2.getTime();
     
             let difference = date2 - date1;
-            let daysDifference = difference / 1000 / 60 / 60 / 24
+            let daysDifference = difference / 1000 / 60 / 60 / 24;
     
             let days = Math.trunc(
                 daysDifference);
@@ -129,31 +147,46 @@ class Auction {
 }
 
 
+let item;
 
-let item = new Auction(
-    "Canon EOS 90D",
-    "https://ae01.alicdn.com/kf/Ufd141a24622f4d0ca95bfd998ba43c21T/Canon-EOS-90D-DSLR-C-mara-4K-y-EF-S-18-135mm-f-3-5-5.jpeg",
-    "Una cámara réflex repleta de funciones que te permite acercarte más, disparar más rápido y captar increíbles imágenes de 32,5 megapíxeles. Un rápido rendimiento réflex que te permite acercarte más. Un perfecto equilibrio de velocidad, calidad de imagen y portabilidad, ideal para acercarte más a la naturaleza y capturar deportes de movimiento rápido.",
-    "2021-8-7 00:00:00",
-    100
-);
+fetch("http://localhost/Subasta/auctions.php")
+.then(response => response.json())
+.then(data => {
 
-item.putDataInElement(
-    item.title, TITLE_HTML);
-item.putURLInElement(
-    item.img, IMG_HTML);
-item.putDataInElement(
-    item.description, DESCRIPTION_HTML);
-item.putDataInElement(
-    item.price +"€", PRICE_HTML);
-item.putDataInElement(
-    item.price + (item.price * 0.1) +"€", NEXT_BID_HTML);
-item.putDataInElement( 
-    item.price + item.price * 0.1 +"€", FAST_BID_BTN_1);
-item.putDataInElement(
-    item.price + item.price * 0.2 +"€", FAST_BID_BTN_2);
-item.putDataInElement(
-    item.price + item.price * 0.3 +"€", FAST_BID_BTN_3);
-item.countdownOfDateInElement(
-    item.time, TIME_HTML);
-item.putStorageDataInElement(PREVIOUS_BIDS_HTML);
+    let currentPrice = data.length
+
+    item = new Auction(
+        "Canon EOS 90D",
+        "https://ae01.alicdn.com/kf/Ufd141a24622f4d0ca95bfd998ba43c21T/Canon-EOS-90D-DSLR-C-mara-4K-y-EF-S-18-135mm-f-3-5-5.jpeg",
+        "Una cámara réflex repleta de funciones que te permite acercarte más, disparar más rápido y captar increíbles imágenes de 32,5 megapíxeles. Un rápido rendimiento réflex que te permite acercarte más. Un perfecto equilibrio de velocidad, calidad de imagen y portabilidad, ideal para acercarte más a la naturaleza y capturar deportes de movimiento rápido.",
+        "2021-8-7 00:00:00",
+        parseInt(data[currentPrice-2][1])
+    );
+    
+    item.putDataInElement(
+        item.title, TITLE_HTML);
+    item.putURLInElement(
+        item.img, IMG_HTML);
+    item.putDataInElement(
+        item.description, DESCRIPTION_HTML);
+    item.putDataInElement(
+        item.price +"€", PRICE_HTML);
+    item.putDataInElement(
+        item.price + (item.price * 0.1) +"€", NEXT_BID_HTML);
+    item.putDataInElement( 
+        item.price + item.price * 0.1 +"€", FAST_BID_BTN_1);
+    item.putDataInElement(
+        item.price + item.price * 0.2 +"€", FAST_BID_BTN_2);
+    item.putDataInElement(
+        item.price + item.price * 0.3 +"€", FAST_BID_BTN_3);
+    item.countdownOfDateInElement(
+        item.time, TIME_HTML);
+    //item.putStorageDataInElement(PREVIOUS_BIDS_HTML);
+
+    item.putArrayInElement(
+        data, 
+        PREVIOUS_BIDS_HTML);
+});
+
+
+
