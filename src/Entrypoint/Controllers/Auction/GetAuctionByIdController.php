@@ -12,10 +12,10 @@ class GetAuctionByIdController
 {
     public function execute(Request $request): Response
     {
-        $userId = $request->get('id');
+        $auctionId = $request->get('id');
 
 
-        $auctionBids = fopen('./../src/Infrastructure/Files/Bids/'.$userId.'.csv', "r");
+        $auctionBids = fopen('./../src/Infrastructure/Files/Bids/'.$auctionId.'.csv', "r");
         $lastBid;
         while (($data = fgetcsv($auctionBids, 1000, ',')) !== false) {
             $lastBid = $data[1];
@@ -29,15 +29,15 @@ class GetAuctionByIdController
             throw new Exception('File not found');
         }
 
-        if (null === $userId) {
+        if (null === $auctionId) {
             return new JsonResponse([], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = [];
+        $aucion = [];
 
         while (($data = fgetcsv($file, 1000, ',')) !== false) {
-            if ($data[0] === $userId) {
-                $user = [
+            if ($data[0] === $auctionId) {
+                $aucion = [
                         'name' => $data[1],
                         'image' => $data[2],
                         'description' => $data[3],
@@ -48,7 +48,7 @@ class GetAuctionByIdController
         }
 
         fclose($file);
-        return new JsonResponse($user, count($user) ? Response::HTTP_OK : Response::HTTP_NOT_FOUND);
+        return new JsonResponse($aucion, count($aucion) ? Response::HTTP_OK : Response::HTTP_NOT_FOUND);
 
     }
 

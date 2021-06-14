@@ -18,13 +18,13 @@ class GetBidByIdController
         }
 
         while (($data = fgetcsv($file, 1000, ',')) !== false) {
-            $users[] = [
+            $bids[] = [
                     'date' => $data[0],
                     'price' => $data[1]
                 ];
         }
 
-        return new JsonResponse($users);
+        return new JsonResponse($bids);
 
     }
 

@@ -19,7 +19,7 @@ class GetAllAuctionsController
         }
 
         while (($data = fgetcsv($file, 1000, ',')) !== false) {
-            $users[] = [
+            $auctions[] = [
                     'id' => $data[0],
                     'name' => $data[1],
                     'image' => $data[2],
@@ -29,6 +29,6 @@ class GetAllAuctionsController
                 ];
         }
 
-        return new JsonResponse($users);
+        return new JsonResponse($auctions);
     }
 }
