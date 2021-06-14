@@ -1,6 +1,6 @@
 let auction;
 
-fetch("http://localhost:9200/auctions")
+fetch("http://localhost:9300/auctions")
 .then(response => response.json())
 .then(data => {
 
@@ -43,7 +43,7 @@ const PREVIOUS_BIDS_HTML = document.getElementById("auction-previous-bids");
 const AUCTION_HTML = document.getElementById("auctions-list2");
 
 let showActionById = (auctionId) => {
-    fetch("http://localhost:9200/auctions/"+auctionId)
+    fetch("http://localhost:9300/auctions/"+auctionId)
     .then(response => response.json())
     .then(data => {
 
@@ -78,7 +78,7 @@ let showActionById = (auctionId) => {
             item.time, TIME_HTML);
         }, 1000);
 
-        fetch("http://localhost:9200/bids/"+auctionId)
+        fetch("http://localhost:9300/bids/"+auctionId)
             .then(response => response.json())
             .then(data => {
                 item.putArrayInElement(

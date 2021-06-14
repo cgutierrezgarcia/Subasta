@@ -39,7 +39,7 @@ class Auction {
                 redirect: 'follow'
             };
 
-            fetch("http://localhost:9200/bids", requestOptions)
+            fetch("http://localhost:9300/bids", requestOptions)
                 .then(response => response.text())
                 .then(result => console.log(result))
                 .catch(error => console.log('error', error));

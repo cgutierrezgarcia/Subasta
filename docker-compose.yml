@@ -6,7 +6,7 @@ services:
 
     mysql:
       image: mysql:8.0
-      container_name: ies-la-cierva-mysql
+      container_name: ies-la-cierva-subasta-mysql
       working_dir: /application
       volumes:
         - .:/application
@@ -16,21 +16,21 @@ services:
         - MYSQL_USER=testuser
         - MYSQL_PASSWORD=admin1234
       ports:
-        - "9202:3306"
+        - "9302:3306"
 
     webserver:
       image: nginx:alpine
-      container_name: ies-la-cierva-webserver
+      container_name: ies-la-cierva-subasta-webserver
       working_dir: /application
       volumes:
           - .:/application
           - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       ports:
-       - "9200:80"
+       - "9300:80"
 
     php-fpm:
       build: phpdocker/php-fpm
-      container_name: ies-la-cierva-php-fpm
+      container_name: ies-la-cierva-subasta-php-fpm
       working_dir: /application
       volumes:
         - .:/application
