@@ -1,0 +1,44 @@
+[
+  {
+    "name": "home",
+    "path": "/home",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\HomeController::execute",
+    "methods": ["GET"]
+  },
+  {
+    "name": "create",
+    "path": "/create",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\CreateController::execute",
+    "methods": ["GET"]
+  },
+  {
+    "name": "get_all_auctions",
+    "path": "/auctions",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\Auction\\GetAllAuctionsController::execute",
+    "methods": ["GET"]
+  },
+  {
+    "name": "get_auction_by_id",
+    "path": "/auctions/{id}",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\Auction\\GetAuctionByIdController::execute",
+    "methods": ["GET"]
+  },
+  {
+    "name": "get_bid_by_id",
+    "path": "/bids/{id}",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\Bid\\GetBidByIdController::execute",
+    "methods": ["GET"]
+  },
+  {
+    "name": "create_auction",
+    "path": "/auctions",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\Auction\\CreateAuctionController::execute",
+    "methods": ["POST"]
+  },
+  {
+    "name": "create_bid",
+    "path": "/bids",
+    "controller": "\\IESLaCierva\\Entrypoint\\Controllers\\Bid\\CreateBidController::execute",
+    "methods": ["POST"]
+  }
+]
